@@ -11,7 +11,7 @@ var clients = 11
 
 var activeSockets = [];
 
-
+//commanted by sridhar
 io.on('connection', function (socket) {
     console.log(activeSockets)
     const existingSocket = activeSockets.find(
