@@ -1,5 +1,4 @@
 const express = require('express')
-const Peer = require('simple-peer')
 const app = express()
 const http = require('http').Server(app)
 const io = require('socket.io')(http)
@@ -14,6 +13,7 @@ var activeSockets = [];
 //commanted by sridhar
 io.on('connection', function (socket) {
     console.log(activeSockets)
+    console.log('test for EC2')
     const existingSocket = activeSockets.find(
        existingSocket => existingSocket === socket.id
      );
