@@ -1,14 +1,33 @@
 const express = require('express')
 const app = express()
-const http = require('http').Server(app)
-const io = require('socket.io')(http)
-const port = process.env.PORT || 3000
-const debug  = require('debug')('http')
+//const http = require('http').Server(app) 
+const http = require('http')
+const https = require('https')
+// const io = require('socket.io')(http) 
+const ioServer = require('socket.io') 
+const port_http = process.env.PORT || 3000 //for http 
+const port_https = process.env.PORT || 3443 // for https 
+const debug  = require('debug')('https')
+
+var fs = require('fs');
+
+
+var opts = {
+  key: fs.readFileSync('ssl_cert/privatekey.pem'),
+  cert: fs.readFileSync('ssl_cert/server.crt')
+};
+var httpsServer = https.createServer(opts, app)
+var httpServer = http.createServer(app);
+var clients = 11
+var activeSockets = []
+var io = new ioServer()
 
 app.use(express.static(__dirname + "/public"))
-var clients = 11
 
-var activeSockets = [];
+
+
+io.attach(httpServer);
+io.attach(httpsServer);
 
 //commanted by sridhar
 io.on('connection', function (socket) {
@@ -103,7 +122,7 @@ function SendAnswer(data) {
     this.broadcast.emit("BackAnswer", data)
 }
 
-http.listen(port, () => console.log(`Active on ${port} port`))
 
 
-
+httpServer.listen(port_http, () => console.log(`Active on ${port_http} port`))
+httpsServer.listen(port_https, () => console.log(`Active on ${port_https} port`))
