@@ -11,7 +11,6 @@ const debug  = require('debug')('https')
 
 var fs = require('fs');
 
-
 var opts = {
   key: fs.readFileSync('ssl_cert/privatekey.pem'),
   cert: fs.readFileSync('ssl_cert/server.crt')
@@ -26,13 +25,12 @@ app.use(express.static(__dirname + "/public"))
 
 
 
-io.attach(httpServer);
-io.attach(httpsServer);
+io.listen(httpServer);
+io.listen(httpsServer);
 
 //commanted by sridhar
 io.on('connection', function (socket) {
     console.log(activeSockets)
-    console.log('test for EC2')
     const existingSocket = activeSockets.find(
        existingSocket => existingSocket === socket.id
      );
