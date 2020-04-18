@@ -21,8 +21,9 @@ var clients = 11
 var activeSockets = []
 var io = new ioServer()
 
-app.use(express.static(__dirname + "/public"))
 
+
+app.use(express.static(__dirname + "/public"))
 
 
 io.listen(httpServer);
@@ -31,28 +32,82 @@ io.listen(httpsServer);
 //commanted by sridhar
 io.on('connection', function (socket) {
     console.log(activeSockets)
+    console.log(socket.id)
     const existingSocket = activeSockets.find(
        existingSocket => existingSocket === socket.id
      );
 
-    if (!existingSocket) {
-       activeSockets.push(socket.id);
+    // if (!existingSocket) {
+    //    activeSockets.push(socket.id);
  
+    //    socket.emit("update-user-list", {
+    //       users: activeSockets.filter(
+    //         existingSocket => existingSocket !== socket.id
+    //       )
+    //    });
+ 
+    //    socket.broadcast.emit("update-user-list", {
+    //      users: [socket.id]
+    //    });
+    //  }
+
+
+
+
+     // socket.on("call-user",CallUser);
+     // socket.on("make-answer",MakeAnswer);
+     // socket.on("reject-call",RejectCall);
+     // socket.on("disconnect",Disconnect);
+
+
+
+
+  socket.on("update-user-list", () => {
+    broadcaster = socket.id;
+    console.log(broadcaster)
+     if (!existingSocket) {
+       activeSockets.push(socket.id);
+       //all connection
        socket.emit("update-user-list", {
          users: activeSockets.filter(
            existingSocket => existingSocket !== socket.id
          )
        });
- 
+       //new connection
        socket.broadcast.emit("update-user-list", {
          users: [socket.id]
        });
      }
+  });
 
-     socket.on("call-user",CallUser);
-     socket.on("make-answer",MakeAnswer);
-     socket.on("reject-call",RejectCall);
-     socket.on("disconnect",Disconnect);
+
+
+
+    socket.on("offer", (id, message) => {
+      console.log("offer")
+      console.log(id)
+      console.log(socket.id)
+      socket.to(id).emit("offer", socket.id, message);
+    });
+
+    socket.on("answer", (id, message) => {
+      socket.to(id).emit("answer", socket.id, message);
+    });
+
+    socket.on("candidate", (id, message) => {
+      //console.log("candidate")
+      socket.to(id).emit("candidate", socket.id, message);
+    });
+
+    socket.on("disconnect", () => {
+      console.log("disconnect")
+      activeSockets = activeSockets.filter(
+          existingSocket => existingSocket !== socket.id
+      );
+      socket.broadcast.emit("disconnectPeer", socket.id);
+    });
+
+
  
     // socket.on("NewClient", function () {
     //     console.log(clients)
