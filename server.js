@@ -72,6 +72,7 @@ io.on('connection', function (socket) {
          users: activeSockets.filter(
            existingSocket => existingSocket !== socket.id
          )
+         // users: activeSockets
        });
        //new connection
        socket.broadcast.emit("update-user-list", {

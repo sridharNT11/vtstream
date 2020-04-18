@@ -51,8 +51,14 @@ socket.on("answer", (id, description) => {
 
 socket.on("candidate", (id, candidate) => {
   // alert("candidate - " +id)
-  if(peerConnections[id])
-  	peerConnections[id].addIceCandidate(new RTCIceCandidate(candidate));
+  console.log("candidate : " + candidate)
+  if(candidate)
+  {
+  	// peerConnections[id].addIceCandidate(candidate);
+  	peerConnections[id].addIceCandidate(new RTCIceCandidate(candidate)).catch(e => console.error(e));;
+
+  }
+  	
 });
 
 
