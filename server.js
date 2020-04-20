@@ -30,152 +30,172 @@ io.listen(httpServer);
 io.listen(httpsServer);
 
 //commanted by sridhar
-io.on('connection', function (socket) {
-    console.log(activeSockets)
-    console.log(socket.id)
-    const existingSocket = activeSockets.find(
-       existingSocket => existingSocket === socket.id
-     );
+// io.on('connection', function (socket) {
+//     console.log(activeSockets)
+//     console.log(socket.id)
+//     const existingSocket = activeSockets.find(
+//        existingSocket => existingSocket === socket.id
+//      );
 
-    // if (!existingSocket) {
-    //    activeSockets.push(socket.id);
+//     // if (!existingSocket) {
+//     //    activeSockets.push(socket.id);
  
-    //    socket.emit("update-user-list", {
-    //       users: activeSockets.filter(
-    //         existingSocket => existingSocket !== socket.id
-    //       )
-    //    });
+//     //    socket.emit("update-user-list", {
+//     //       users: activeSockets.filter(
+//     //         existingSocket => existingSocket !== socket.id
+//     //       )
+//     //    });
  
-    //    socket.broadcast.emit("update-user-list", {
-    //      users: [socket.id]
-    //    });
-    //  }
+//     //    socket.broadcast.emit("update-user-list", {
+//     //      users: [socket.id]
+//     //    });
+//     //  }
 
 
 
 
-     // socket.on("call-user",CallUser);
-     // socket.on("make-answer",MakeAnswer);
-     // socket.on("reject-call",RejectCall);
-     // socket.on("disconnect",Disconnect);
+//      // socket.on("call-user",CallUser);
+//      // socket.on("make-answer",MakeAnswer);
+//      // socket.on("reject-call",RejectCall);
+//      // socket.on("disconnect",Disconnect);
 
 
 
 
-  socket.on("update-user-list", () => {
-    broadcaster = socket.id;
-    console.log(broadcaster)
-     if (!existingSocket) {
-       activeSockets.push(socket.id);
-       //all connection
-       socket.emit("update-user-list", {
-         users: activeSockets.filter(
-           existingSocket => existingSocket !== socket.id
-         )
-         // users: activeSockets
-       });
-       //new connection
-       socket.broadcast.emit("update-user-list", {
-         users: [socket.id]
-       });
-     }
-  });
+//   socket.on("update-user-list", () => {
+//     broadcaster = socket.id;
+//     console.log("update-user-list")
+//     console.log(broadcaster)
+//      if (!existingSocket) {
+//        activeSockets.push(socket.id);
+//        //all connection
+//        socket.emit("update-user-list", {
+//          users: activeSockets.filter(
+//            existingSocket => existingSocket !== socket.id
+//          ),
+//          myid: socket.id
+//          // users: activeSockets
+//        });
+//        //new connection
+//        socket.broadcast.emit("update-user-list", {
+//          users: [socket.id]
+//        });
+
+//      }
+//   });
 
 
 
 
-    socket.on("offer", (id, message) => {
-      console.log("offer")
-      console.log(id)
-      console.log(socket.id)
-      socket.to(id).emit("offer", socket.id, message);
-    });
+//     socket.on("offer", (id, message) => {
+//       console.log("offer")
+//       console.log(id)
+//       console.log(socket.id)
+//       socket.to(id).emit("offer", socket.id, message);
+//     });
 
-    socket.on("answer", (id, message) => {
-      socket.to(id).emit("answer", socket.id, message);
-    });
+//     socket.on("answer", (id, message) => {
+//       socket.to(id).emit("answer", socket.id, message);
+//     });
 
-    socket.on("candidate", (id, message) => {
-      //console.log("candidate")
-      socket.to(id).emit("candidate", socket.id, message);
-    });
+//     socket.on("candidate", (id, message) => {
+//       //console.log("candidate")
+//       socket.to(id).emit("candidate", socket.id, message);
+//     });
 
-    socket.on("disconnect", () => {
-      console.log("disconnect")
-      activeSockets = activeSockets.filter(
-          existingSocket => existingSocket !== socket.id
-      );
-      socket.broadcast.emit("disconnectPeer", socket.id);
-    });
+//     socket.on("disconnect", () => {
+//       console.log("disconnect")
+//       activeSockets = activeSockets.filter(
+//           existingSocket => existingSocket !== socket.id
+//       );
+//       socket.broadcast.emit("disconnectPeer", socket.id);
+//     });
 
 
  
-    // socket.on("NewClient", function () {
-    //     console.log(clients)
-    //     //if (clients < 2) {
-    //         // if (clients == 1) {
-    //             this.emit('CreatePeer')
-    //         // }
-    //     //}
-    //     // else
-    //     //     this.emit('SessionActive')
-    //     clients++;
-    // })
-    // socket.on('Offer', SendOffer)
-    // socket.on('Answer', SendAnswer)
-    // socket.on('disconnect', Disconnect)
-})
+//     // socket.on("NewClient", function () {
+//     //     console.log(clients)
+//     //     //if (clients < 2) {
+//     //         // if (clients == 1) {
+//     //             this.emit('CreatePeer')
+//     //         // }
+//     //     //}
+//     //     // else
+//     //     //     this.emit('SessionActive')
+//     //     clients++;
+//     // })
+//     // socket.on('Offer', SendOffer)
+//     // socket.on('Answer', SendAnswer)
+//     // socket.on('disconnect', Disconnect)
+// })
 
-function CallUser(data) {
-    this.to(data.to).emit("call-made", {
-          offer: data.offer,
-          socket: this.id
+// function CallUser(data) {
+//     this.to(data.to).emit("call-made", {
+//           offer: data.offer,
+//           socket: this.id
+//     });
+// }
+
+// function MakeAnswer(data) {
+//     this.to(data.to).emit("answer-made", {
+//           socket: this.id,
+//           answer: data.answer
+//     });
+// }
+
+// function RejectCall(data) {
+//     this.to(data.from).emit("call-rejected", {
+//           socket: this.id
+//     });
+// }
+
+// function Disconnect() {
+//     activeSockets = activeSockets.filter(
+//           existingSocket => existingSocket !== this.id
+//         );
+//     this.broadcast.emit("remove-user", {
+//           socketId: this.id
+//     });
+// }
+
+// //old fun
+// function Disconnect_old() {
+//     console.log("Disconnect")
+//     if (clients > 0) {
+//         if (clients <= 2)
+//             console.log("Disconnect 2")
+//            this.broadcast.emit("Disconnect")
+//         clients--
+//     }
+// }
+
+// function SendOffer(offer) {
+//     console.log("SendOffer")
+//     this.broadcast.emit("BackOffer", offer)
+// }
+
+// function SendAnswer(data) {
+//     console.log("SendAnswer")
+//     this.broadcast.emit("BackAnswer", data)
+// }
+
+
+
+io.on('connection', function(socket){
+  io.sockets.emit("user-joined", socket.id, io.engine.clientsCount, Object.keys(io.sockets.clients().sockets));
+
+  socket.on('signal', (toId, message) => {
+    io.to(toId).emit('signal', socket.id, message);
     });
-}
 
-function MakeAnswer(data) {
-    this.to(data.to).emit("answer-made", {
-          socket: this.id,
-          answer: data.answer
-    });
-}
+    socket.on("message", function(data){
+    io.sockets.emit("broadcast-message", socket.id, data);
+    })
 
-function RejectCall(data) {
-    this.to(data.from).emit("call-rejected", {
-          socket: this.id
-    });
-}
-
-function Disconnect() {
-    activeSockets = activeSockets.filter(
-          existingSocket => existingSocket !== this.id
-        );
-    this.broadcast.emit("remove-user", {
-          socketId: this.id
-    });
-}
-
-//old fun
-function Disconnect_old() {
-    console.log("Disconnect")
-    if (clients > 0) {
-        if (clients <= 2)
-            console.log("Disconnect 2")
-           this.broadcast.emit("Disconnect")
-        clients--
-    }
-}
-
-function SendOffer(offer) {
-    console.log("SendOffer")
-    this.broadcast.emit("BackOffer", offer)
-}
-
-function SendAnswer(data) {
-    console.log("SendAnswer")
-    this.broadcast.emit("BackAnswer", data)
-}
-
+  socket.on('disconnect', function() {
+    io.sockets.emit("user-left", socket.id);
+  })
+});
 
 
 httpServer.listen(port_http, () => console.log(`Active on ${port_http} port`))

@@ -1,0 +1,53 @@
+<html>
+
+<head>
+    <title>Video Chat App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="main_new.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container">
+      <header class="header">
+        <div class="logo-container">
+          <h1 class="logo-text">
+          Video Stream
+          </h1>
+        </div>
+      </header>
+      <div class="content-container">
+        <div class="active-users-panel" id="active-user-container">
+          <h3 class="panel-title">Active Users:</h3>
+          <section class="select">
+      <label for="audioSource">Audio source: </label>
+      <select id="audioSource"></select>
+    </section>
+
+    <section class="select">
+      <label for="videoSource">Video source: </label>
+      <select id="videoSource"></select>
+    </section>
+          <video autoplay muted class="local-video" id="local-video"></video>
+          <!-- <video autoplay class="remote-video" id="remote-video"></video> -->
+        </div>
+        <div class="video-chat-container">
+          <h2 class="talk-info" id="talking-with-info">
+            Select active user on the left menu.
+          </h2>
+          <div class="video-container">
+          <video autoplay class="big-screen" id="big-screen"></video>  
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="main_new.js"></script>
+    <!-- <script src="adapter-latest.js"></script>
+    <script src="main.js"></script> -->
+    <script type="text/javascript">
+      
+    </script>
+</body>
+
+</html>

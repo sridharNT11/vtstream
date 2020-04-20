@@ -11,28 +11,11 @@ const config = {
   iceServers: [
     {
       urls: ["stun:stun.l.google.com:19302"]
-
-      // urls: ["stun:192.168.43.89:3443"]
-    },
-    {
-      urls: ["stun:stun.services.mozilla.com"]
-      // urls: ["stun:192.168.43.89:3443"]
-    },
-
-    // {
-    //   urls: ["stun:numb.viagenie.ca"]
-    //   // urls: ["stun:192.168.43.89:3443"]
-    // },
-    {
-      url: 'turn:numb.viagenie.ca',
-      credential: 'sridharan',
-      username: 'sridharan.r@numerotec.com'
     }
   ]
 };
 
 var mysocketid;
-
 
 
 //socket on  from serve js
@@ -41,7 +24,7 @@ socket.on("update-user-list", ({ users,myid }) => {
   if(myid)
   {
     mysocketid = myid;   
-    // createMyOffer(mysocketid);
+    createMyOffer(mysocketid);
   }
   updateUserList(users);
 });
@@ -53,13 +36,14 @@ socket.on("offer", (id, description) => {
   peerConnection = new RTCPeerConnection(config);
   peerConnection
     .setRemoteDescription(description)
+    .then(() => navigator.mediaDevices.getUserMedia({ video: { width: 150, height: 150 }, audio: true }))
     .then(() => peerConnection.createAnswer())
     .then(sdp => peerConnection.setLocalDescription(sdp))
     .then(() => {
       socket.emit("answer", id, peerConnection.localDescription);
     });
   peerConnection.ontrack = event => {
-    const remoteVideo = document.getElementById(id);
+  	const remoteVideo = document.getElementById(id);
     remoteVideo.srcObject = event.streams[0];
   };
   peerConnection.onicecandidate = event => {
@@ -72,28 +56,29 @@ socket.on("offer", (id, description) => {
 
 socket.on("answer", (id, description) => {
  //alert("answer - " +id)
-    peerConnections[id].setRemoteDescription(description);
+ if(peerConnections[id])
+  	peerConnections[id].setRemoteDescription(description);
 });
 
 socket.on("candidate", (id, candidate) => {
   console.log("on candidate - " +id)
   if(candidate)
   {
-    // peerConnections[id].addIceCandidate(candidate);
-    peerConnections[id].addIceCandidate(new RTCIceCandidate(candidate)).catch(e => console.error(e));;
+  	// peerConnections[id].addIceCandidate(candidate);
+  	peerConnections[id].addIceCandidate(new RTCIceCandidate(candidate)).catch(e => console.error(e));;
 
   }
-    
+  	
 });
 
 
 socket.on("disconnectPeer", id => {
-  const elToRemove = document.getElementById(id);
+	const elToRemove = document.getElementById(id);
     //peerConnections[id].close();
     delete peerConnections[id];
-    if (elToRemove) {
-      elToRemove.remove();
-    } 
+  	if (elToRemove) {
+    	elToRemove.remove();
+  	}	
 });
 
 
@@ -177,9 +162,9 @@ function updateUserList(socketIds) {
   socketIds.forEach(socketId => {
     const alreadyExistingUser = document.getElementById(socketId);
     if(!alreadyExistingUser) {
-      const userContainerEl = createUserVideoContainer(socketId);
-      activeUserContainer.appendChild(userContainerEl);
-      createOffer(socketId);
+    	const userContainerEl = createUserVideoContainer(socketId);
+  		activeUserContainer.appendChild(userContainerEl);
+  		createOffer(socketId);
     }
   });
 }
@@ -213,7 +198,7 @@ function createOffer(id)
 
 
 function createUserVideoContainer(socketId) {
-  const userContainerEl = document.createElement("VIDEO");  
+  const userContainerEl = document.createElement("VIDEO");	
   // const usernameEl = document.createElement("p");
 
   userContainerEl.setAttribute("class", "remote-video");
@@ -221,7 +206,7 @@ function createUserVideoContainer(socketId) {
   userContainerEl.setAttribute("autoplay", "autoplay");
 
   userContainerEl.addEventListener("click", () => {
-      videoBigScreen.srcObject = userContainerEl.srcObject  
+  		videoBigScreen.srcObject = userContainerEl.srcObject  
   });
 
   return userContainerEl;
