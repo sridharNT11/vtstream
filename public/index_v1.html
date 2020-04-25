@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+        
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <link rel="stylesheet" href="main.css">
+    </head>
+
+    <body>
+        <!-- <div class="container"> -->
+            <div class="row videos">
+                <div class="col col-lg col-md col-sm col-xs">
+                        <video id="localVideo" autoplay muted playsinline ></video>    
+                </div>
+            </div>  
+
+
+        <!-- <div class="videos">
+            <div>
+                <video id="localVideo" autoplay muted playsinline ></video> -->
+                <!-- <div class="soundbar"><span class="currentVolume"></span></div> -->
+            <!-- </div>
+        </div> -->
+        
+        <br />
+        <div id="connections"></div>
+
+        <script src="/socket.io/socket.io.js"></script>
+        <!-- <script src="config.js"></script> -->
+        <script src="webrtc_v1.js"></script>
+
+        <script type="text/javascript">
+            pageReady();
+        </script>
+
+    </body>
+</html>
