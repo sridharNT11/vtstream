@@ -9,6 +9,7 @@ const port_http = process.env.PORT || 3000 //for http
 const port_https = process.env.PORT || 3443 // for https 
 const debug  = require('debug')('https')
 
+
 var fs = require('fs');
 
 var opts = {
@@ -21,13 +22,20 @@ var clients = 11
 var activeSockets = []
 var io = new ioServer()
 
-
+io.listen(httpServer);
+io.listen(httpsServer);
 
 app.use(express.static(__dirname + "/public"))
 
+app.engine('html', require('ejs').renderFile);
 
-io.listen(httpServer);
-io.listen(httpsServer);
+app.get('/room/:room_id', function(req, res) {
+  console.log()
+  room_id = req.params.room_id;
+  res.render(__dirname + "/public/room.html",{room_id,room_id});
+});
+
+
 
 //commanted by sridhar
 // io.on('connection', function (socket) {
@@ -182,18 +190,39 @@ io.listen(httpsServer);
 
 
 io.on('connection', function(socket){
-  io.sockets.emit("user-joined", socket.id, io.engine.clientsCount, Object.keys(io.sockets.clients().sockets));
 
+  console.log("i am socket");
+  
+  socket.on('join', function(room) {
+    console.log("i am join : " + room);
+    socket.room = room;
+    socket.join(room);
+    // console.log(socket.id + " now in rooms ", socket.rooms);
+    var count =  io.sockets.adapter.rooms[room].length;
+    var sockets =  io.sockets.adapter.rooms[room].sockets;
+    console.log(io.in(socket.room).clients().sockets);
+
+    io.sockets.in(socket.room).emit("user-joined", socket.id, count, Object.keys(sockets),socket.room);
+
+  });
+  
+  
   socket.on('signal', (toId, message) => {
-    io.to(toId).emit('signal', socket.id, message);
-    });
+      // console.log(" to : " + toId)
+      // console.log(" socket.id : " + socket.id)
+      io.to(toId).emit('signal', socket.id, message);
+      //socket.broadcast.to(socket.room).emit('signal', socket.id, message);
+  });
 
-    socket.on("message", function(data){
-    io.sockets.emit("broadcast-message", socket.id, data);
-    })
+  socket.on("message", function(data){
+      console.log(" message : " + socket.room)
+      io.sockets.in(socket.room).emit("broadcast-message", socket.id, data);
+  })
 
   socket.on('disconnect', function() {
-    io.sockets.emit("user-left", socket.id);
+    console.log(" disconnect : " + socket.room)
+    io.sockets.in(socket.room).emit("user-left", socket.id);
+    socket.leave(socket.room);
   })
 });
 

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet"/>
+
+        <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+         -->
+         <link rel="stylesheet" href="/main.css">
+    </head>
+
+    <body>
+        <input type="hidden" name="room_id" id="room_id" value="<%= room_id %>">
+        <div id="container" class="container">
+            <div class="row videos align-items-center">
+                <div class="col-6">
+                        <video id="localVideo" autoplay muted playsinline class="embed-responsive-item" ></video>    
+                        <img src="/images/screensharing.png" width="50px" height="50px" id="btnScreenShare"  class="btnscreen img-fluid">
+                        <img src="/images/camera.png" width="50px" height="50px" id="btnCamera"  style="display: none" class="btnscreen img-fluid">
+                </div>
+                <!-- <div class="col-6">
+                        <video id="localVideo" autoplay muted playsinline ></video>    
+                        <img src="images/screensharing.png" width="50px" height="50px" id="btnScreenShare"  class="btnscreen img-fluid">
+                </div> -->
+            </div>  
+
+
+        <!-- <div class="videos">
+            <div>
+                <video id="localVideo" autoplay muted playsinline ></video> -->
+                <!-- <div class="soundbar"><span class="currentVolume"></span></div> -->
+            <!-- </div> -->
+        </div>
+        
+        <br />
+        <div id="connections"></div>
+
+        <script src="/socket.io/socket.io.js"></script>
+        <!-- <script src="config.js"></script> -->
+        <script src="/webrtc.js"></script>
+
+        <script type="text/javascript">
+            pageReady();
+        </script>
+
+
+<div id="Modal" class="modal  fade" role="dialog">
+<div class="modal-dialog modal-xl">
+
+<!-- Modal content-->
+<div class="modal-content">
+  <div class="modal-header">
+    <h4 class="modal-title">Information</h4>
+    <button type="button" class="close" data-dismiss="modal">&times;</button>
+  </div>
+  <div class="modal-body">
+    <p>
+        Screen capturing is currently an experimental feature which is only supported by latest Chrome and Firefox! 
+        <br />
+        <br />
+        To enable this feature in Chrome, toggle the Experimental Web Platform feature (See chrome://flags/#enable-experimental-web-platform-features).
+    </p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+  </div>
+</div>
+
+  </div>
+</div>
+
+    </body>
+</html>

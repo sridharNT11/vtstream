@@ -1,3 +1,4 @@
+var roomNum;
 var localVideo;
 var firstPerson = false;
 var socketCount = 0;
@@ -12,9 +13,11 @@ var constraints = {
         audio: true,
     };
 
+
 var btnScreenShare = document.getElementById("btnScreenShare");
 var btnCamera = document.getElementById("btnCamera");
 var container = document.getElementById("container");
+
 
 
 localVideo = document.getElementById('localVideo');
@@ -110,6 +113,8 @@ function  startScreenCapture() {
 
 function pageReady() {
 
+    roomNum = $("#room_id").val();
+
     // localVideo = document.getElementById('localVideo');
     // remoteVideo = document.getElementById('remoteVideo');
 
@@ -123,6 +128,8 @@ function pageReady() {
                 socket.on('signal', gotMessageFromServer);    
 
                 socket.on('connect', function(){
+
+                    socket.emit('join', roomNum); 
 
                     socketId = socket.id;
 
@@ -143,7 +150,9 @@ function pageReady() {
                     });
 
 
-                    socket.on('user-joined', function(id, count, _clients){
+                    socket.on('user-joined', function(id, count, _clients,room){
+                        // alert("room : " + room + " - count : "+count);
+
                         // console.log("clients : " + clients)
                         // console.log("count : " + count)
                         // console.log("id : " + id)

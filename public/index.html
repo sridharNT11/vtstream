@@ -8,67 +8,129 @@
 
         <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
          -->
-         <link rel="stylesheet" href="main.css">
+         <link rel="stylesheet" href="/main.css">
     </head>
 
     <body>
-        <div id="container" class="container">
-            <div class="row videos align-items-center">
-                <div class="col-6">
-                        <video id="localVideo" autoplay muted playsinline class="embed-responsive-item" ></video>    
-                        <img src="images/screensharing.png" width="50px" height="50px" id="btnScreenShare"  class="btnscreen img-fluid">
-                        <img src="images/camera.png" width="50px" height="50px" id="btnCamera"  style="display: none" class="btnscreen img-fluid">
+        <div class="container">
+              <div class="jumbotron">
+               <div class="span1">
+                <button type="button" id="btnCreateRoom" class="btn btn-primary">  <i class="icon-video icon-white"></i>
+                    <span><strong>Create Room</strong></span>            
+                </button>
+
+                <button type="button" id="btnJoinRoom" class="btn btn-primary">  <i class="icon-pencil icon-white"></i>
+                    <span><strong>Join Room</strong></span>            
+                </button>
                 </div>
-                <!-- <div class="col-6">
-                        <video id="localVideo" autoplay muted playsinline ></video>    
-                        <img src="images/screensharing.png" width="50px" height="50px" id="btnScreenShare"  class="btnscreen img-fluid">
-                </div> -->
-            </div>  
-
-
-        <!-- <div class="videos">
-            <div>
-                <video id="localVideo" autoplay muted playsinline ></video> -->
-                <!-- <div class="soundbar"><span class="currentVolume"></span></div> -->
-            <!-- </div> -->
+                
+              </div>
         </div>
         
-        <br />
-        <div id="connections"></div>
 
-        <script src="/socket.io/socket.io.js"></script>
-        <!-- <script src="config.js"></script> -->
-        <script src="webrtc.js"></script>
+    <!-- Model  -->
+        <div id="ModalCreateRoom" class="modal  fade" role="dialog">
+        <div class="modal-dialog modal-xl">
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">Information</h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+          <div class="modal-body">
+            <p>
+               <label>Share Your New Room link: <span id="spanlink"></span>  </label>
+               <label>Share Your New Room number: <span id="spanRoom"></span>  </label>
+            </p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" id="btnStartRoom">Start Your Room</button>
+            <button type="button" class="btn btn-default"  data-dismiss="modal">Close</button>
+          </div>
+        </div>
 
-        <script type="text/javascript">
-            pageReady();
-        </script>
+          </div>
+        </div>        
 
 
-<div id="Modal" class="modal  fade" role="dialog">
-<div class="modal-dialog modal-xl">
+         <div id="ModalJoinRoom" class="modal  fade" role="dialog">
+        <div class="modal-dialog modal-xl">
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">Information</h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+          <div class="modal-body">
+            <div class="col-md-6 col-sm-12 offset-md-3">
+                <h4 class="mb-3">Please enter your room number:</h4>
+                <form id="reg" name="register" action="register" method="post">
+                    <div class="form-group">
+                        <!--<label for="inputFullName">Mobile Number</label>-->
+                        <input type="text" class="form-control" id="room_no" name="room_no" placeholder="Room Number" value="" >
+                        <label id="errJoinRoom" class="error"></label>
+                    </div>
+                </form>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" id="btnStartJoinRoom">Start Your Room</button>
+            <button type="button" class="btn btn-default"  data-dismiss="modal">Close</button>
+          </div>
+        </div>
 
-<!-- Modal content-->
-<div class="modal-content">
-  <div class="modal-header">
-    <h4 class="modal-title">Information</h4>
-    <button type="button" class="close" data-dismiss="modal">&times;</button>
-  </div>
-  <div class="modal-body">
-    <p>
-        Screen capturing is currently an experimental feature which is only supported by latest Chrome and Firefox! 
-        <br />
-        <br />
-        To enable this feature in Chrome, toggle the Experimental Web Platform feature (See chrome://flags/#enable-experimental-web-platform-features).
-    </p>
-  </div>
-  <div class="modal-footer">
-    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-  </div>
-</div>
+          </div>
+        </div> 
 
-  </div>
-</div>
+
+    <script type="text/javascript">
+        var room_id;
+        var room_link;
+        var spanlink = "#spanlink";
+        var spanRoom = "#spanRoom";
+
+
+        $(document).ready(function() {
+            $("#btnCreateRoom").click(function(e)
+            {
+                room_id = getRandom(9);
+                room_link = window.location.origin+"/room/"+room_id;
+                $(spanlink).text(room_link)
+                $(spanRoom).text(room_id)
+                $('#ModalCreateRoom').modal('show');
+            });
+            $("#btnJoinRoom").click(function(e)
+            {
+                $('#ModalJoinRoom').modal('show');
+            });
+            
+            $("#btnStartRoom").click(function(e)
+            {
+                window.location.replace(room_link);
+            });
+
+            $("#btnStartJoinRoom").click(function(e)
+            {
+                $("#errJoinRoom").html("");
+                if($("#room_no").val())
+                {
+                    room_link = window.location.origin+"/room/"+$("#room_no").val();   
+                    window.location.replace(room_link);
+                }
+                else
+                {
+                    $("#errJoinRoom").html("Please enter your room number");
+                }
+                
+            });
+
+            
+        });
+
+        function getRandom(length) {
+            return Math.floor(Math.pow(10, length-1) + Math.random() * 9 * Math.pow(10, length-1));
+        }
+    </script>
 
     </body>
 </html>
